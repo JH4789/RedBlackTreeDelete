@@ -27,7 +27,7 @@ int main() {
        addTree(treehead, treehead, newnode);
     }
     else if (strcmp(commandinput, "PRINT") == 0) {
-      leftRotate(treehead, treehead->getRight());
+      leftRotate(treehead, treehead);
       printFormat(treehead, 3);
     }
     else if (strcmp(commandinput, "SEARCH") == 0) {
@@ -67,6 +67,7 @@ void addTree(Node* & head, Node* current, Node* newnode) {
     if(newnode->getData() > current->getData()) {
       if(current->getRight() == NULL) {
 	current->setRight(newnode);
+	newnode->setParent(current);
 	return;
       }
       else {
@@ -76,6 +77,7 @@ void addTree(Node* & head, Node* current, Node* newnode) {
     else if(newnode->getData() < current->getData()) {
     if(current->getLeft() == NULL) {
       current->setLeft(newnode);
+      newnode->setParent(newnode);
       return;
     }
     else {
@@ -149,24 +151,20 @@ void fixTree(Node* root) {
  
 }
 void leftRotate(Node* & head, Node* target) {
-  Node* swap = target->getRight();
-  target->setRight(swap->getLeft());
-  if(swap->getLeft() != NULL) {
-    swap->getLeft()->setParent(target);
+  if(target == head) {
+    Node* leftsubtree = target->getRight()->getLeft();
+    head = target->getRight();
+    head->setLeft(target);
+    target->setRight(leftsubtree);
   }
-  swap->getParent()->setParent(target->getParent());
-  if(target->getParent() == NULL) {
-    head = swap;
+
+  else {
+    Node* leftsubtree = target->getRight()->getLeft();
+    Node* targetright = target->getRight();
+    target->getParent()->setLeft(targetright);
+    targetright->setRight(target);
+    target->setRight(leftsubtree);
+      
     
   }
-  else {
-    if(target = target->getParent()->getLeft()) {
-      target->getParent()->setLeft(swap);
-    }
-    else {
-      target->getParent()->setRight(swap);
-    }
-  }
-  swap->setLeft(target);
-  target->setParent(swap);
 }
