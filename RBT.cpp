@@ -8,6 +8,7 @@ void addTree(Node* & head, Node* current, Node* newnode);
 void searchTree(Node* current, int data);
 void fixTree(Node* head);
 void leftRotate(Node* & head, Node* target);
+void rightRotate(Node* & head, Node* target);
 using namespace std;
 int main() {
   Node* heaparray[100];
@@ -27,13 +28,12 @@ int main() {
        addTree(treehead, treehead, newnode);
     }
     else if (strcmp(commandinput, "PRINT") == 0) {
-      leftRotate(treehead, treehead);
+      
       printFormat(treehead, 3);
     }
     else if (strcmp(commandinput, "SEARCH") == 0) {
-      cout << "Enter the number you would like to search for: " << endl;
-      cin >> input;
-      searchTree(treehead, input);
+      leftRotate(treehead, treehead->getLeft());
+      rightRotate(treehead, treehead->getLeft());
     }
     else if (strcmp(commandinput, "FILE") == 0) {
       //Opens from file and iterates through using the same add function
@@ -77,7 +77,7 @@ void addTree(Node* & head, Node* current, Node* newnode) {
     else if(newnode->getData() < current->getData()) {
     if(current->getLeft() == NULL) {
       current->setLeft(newnode);
-      newnode->setParent(newnode);
+      newnode->setParent(current);
       return;
     }
     else {
@@ -151,20 +151,58 @@ void fixTree(Node* root) {
  
 }
 void leftRotate(Node* & head, Node* target) {
+  Node* subtree = NULL;
   if(target == head) {
-    Node* leftsubtree = target->getRight()->getLeft();
+    subtree = target->getRight()->getLeft();
     head = target->getRight();
     head->setLeft(target);
-    target->setRight(leftsubtree);
+    target->setRight(subtree);
   }
-
+  
   else {
-    Node* leftsubtree = target->getRight()->getLeft();
-    Node* targetright = target->getRight();
-    target->getParent()->setLeft(targetright);
-    targetright->setRight(target);
-    target->setRight(leftsubtree);
+    if(target->getRight() == NULL) {
+      cout << "UH OH";
+    }
+    else {
       
-    
+    subtree = target->getRight()->getLeft();
+    Node* targetright = target->getRight();
+    if(target->getParent()->getLeft() == target) {
+    target->getParent()->setLeft(targetright);
+    }
+    else {
+      target->getParent()->setRight(targetright);
+    }
+    targetright->setLeft(target);
+    target->setRight(subtree);    
+    }
   }
+}
+void rightRotate(Node* & head, Node* target) {
+  
+  Node* subtree = NULL;
+  if(target == head) {
+    subtree = target->getLeft()->getRight();
+    head = target->getLeft();
+    head->setRight(target);
+    target->setLeft(subtree);
+  }
+  else {
+    if(target->getLeft() == NULL) {
+      cout << "UH OH";
+    }
+    else {
+      subtree = target->getLeft()->getRight();
+      Node* targetleft = target->getLeft();
+      if(target->getParent()->getLeft() == target) {
+      target->getParent()->setLeft(targetleft);
+      }
+      else {
+	target->getParent()->setRight(targetleft);
+      }
+      targetleft->setRight(target);
+      target->setLeft(subtree);
+    }
+  }
+  
 }

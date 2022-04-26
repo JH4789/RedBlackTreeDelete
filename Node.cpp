@@ -30,6 +30,9 @@ void Node::printNode() {
   else {
     cout << "B";
   }
+  if(parent != NULL) {
+    cout << parent->getData();
+  }
 }
 Node* Node::getParent() {
   return parent;
