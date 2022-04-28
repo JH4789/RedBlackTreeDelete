@@ -6,7 +6,7 @@
 void printFormat(Node* head, int space);
 void addTree(Node* & head, Node* current, Node* newnode);
 void searchTree(Node* current, int data);
-void fixTree(Node* head);
+void fixTree(Node* & head, Node* current);
 void leftRotate(Node* & head, Node* target);
 void rightRotate(Node* & head, Node* target);
 using namespace std;
@@ -32,8 +32,13 @@ int main() {
       printFormat(treehead, 3);
     }
     else if (strcmp(commandinput, "SEARCH") == 0) {
-      leftRotate(treehead, treehead->getLeft());
-      rightRotate(treehead, treehead->getLeft());
+
+      //leftRotate(treehead, treehead);
+      rightRotate(treehead, treehead);
+      
+      //leftRotate(treehead, treehead->getLeft());
+      //rightRotate(treehead, treehead->getLeft());
+      
     }
     else if (strcmp(commandinput, "FILE") == 0) {
       //Opens from file and iterates through using the same add function
@@ -68,6 +73,7 @@ void addTree(Node* & head, Node* current, Node* newnode) {
       if(current->getRight() == NULL) {
 	current->setRight(newnode);
 	newnode->setParent(current);
+	fixTree(head, newnode);
 	return;
       }
       else {
@@ -78,6 +84,7 @@ void addTree(Node* & head, Node* current, Node* newnode) {
     if(current->getLeft() == NULL) {
       current->setLeft(newnode);
       newnode->setParent(current);
+      fixTree(head, newnode);
       return;
     }
     else {
@@ -88,11 +95,13 @@ void addTree(Node* & head, Node* current, Node* newnode) {
        if(current->getLeft() == NULL) {
            current->setLeft(newnode);
 	   newnode->setParent(current);
+	   fixTree(head, newnode);
            return;
        }
        else if(current->getRight() == NULL) {
            current->setRight(newnode);
 	   newnode->setParent(current);
+	   fixTree(head, newnode);
             return;
        }
        else {
@@ -147,8 +156,23 @@ void searchTree(Node* current, int data) {
     cout << "The element is not present in the list!" << endl;
   }
 }
-void fixTree(Node* root) {
- 
+void fixTree(Node* &head, Node* current) {
+  
+  if(current->getParent()->returnColor() == true) {
+    if(current->getUncle() == NULL) {
+      cout << "NULL" << endl;
+      if(current->getParent()->getLeft() == current) {
+	rightRotate(head, current->getParent()->getParent());
+	current->printNode();
+	head->changeColor();
+	head->getRight()->changeColor();
+	
+      }
+    }
+    else {
+      cout << "UNCLE PRESENT" << endl;
+    }
+  }
 }
 void leftRotate(Node* & head, Node* target) {
   Node* subtree = NULL;
@@ -156,14 +180,16 @@ void leftRotate(Node* & head, Node* target) {
     subtree = target->getRight()->getLeft();
     head = target->getRight();
     head->setLeft(target);
+    head->setParent(NULL);
+    target->setParent(head);
     target->setRight(subtree);
+    if(subtree != NULL) {
+    subtree->setParent(target);
+    }
   }
   
   else {
-    if(target->getRight() == NULL) {
-      cout << "UH OH";
-    }
-    else {
+    
       
     subtree = target->getRight()->getLeft();
     Node* targetright = target->getRight();
@@ -175,7 +201,7 @@ void leftRotate(Node* & head, Node* target) {
     }
     targetright->setLeft(target);
     target->setRight(subtree);    
-    }
+    
   }
 }
 void rightRotate(Node* & head, Node* target) {
@@ -185,7 +211,12 @@ void rightRotate(Node* & head, Node* target) {
     subtree = target->getLeft()->getRight();
     head = target->getLeft();
     head->setRight(target);
+    head->setParent(NULL);
     target->setLeft(subtree);
+    target->setParent(head);
+    if(subtree != NULL) {
+      subtree->setParent(target);
+    }
   }
   else {
     if(target->getLeft() == NULL) {
@@ -194,14 +225,21 @@ void rightRotate(Node* & head, Node* target) {
     else {
       subtree = target->getLeft()->getRight();
       Node* targetleft = target->getLeft();
+      cout << target->getData() << endl;
       if(target->getParent()->getLeft() == target) {
       target->getParent()->setLeft(targetleft);
+      targetleft->setParent(target->getParent());
       }
       else {
 	target->getParent()->setRight(targetleft);
+	target->setParent(target->getParent());
       }
       targetleft->setRight(target);
+      target->setParent(targetleft);
       target->setLeft(subtree);
+      if(subtree != NULL) {
+	subtree->setParent(target);
+      }
     }
   }
   

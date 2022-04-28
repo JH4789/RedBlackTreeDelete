@@ -34,6 +34,21 @@ void Node::printNode() {
     cout << parent->getData();
   }
 }
+Node* Node::getUncle() {
+  Node* uncle = NULL;
+  
+  if(parent->getParent() == NULL) {
+    uncle = NULL;
+  }
+  else if(parent->getParent()->getLeft() == parent) {
+    uncle = parent->getParent()->getRight();
+  }
+  else {
+    uncle = parent->getParent()->getLeft();
+  }
+  
+  return uncle;
+}
 Node* Node::getParent() {
   return parent;
 }
