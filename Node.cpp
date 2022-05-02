@@ -22,6 +22,9 @@ void Node::changeColor() {
     color = true;
   }
 }
+void Node::setColor(bool newcolor) {
+  color = newcolor;
+}
 void Node::printNode() {
   cout << data;
   if(color == true) {

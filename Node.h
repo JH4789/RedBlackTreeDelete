@@ -22,6 +22,7 @@ class Node{
   Node* getParent();
   bool returnColor();
   void changeColor();
+  void setColor(bool);
  private:
   int data;
   Node* left;

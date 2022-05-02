@@ -34,7 +34,13 @@ int main() {
     else if (strcmp(commandinput, "SEARCH") == 0) {
 
       //leftRotate(treehead, treehead);
-      rightRotate(treehead, treehead);
+      Node* newnode = new Node(4);
+      treehead->setLeft(newnode);
+      newnode->setParent(treehead);
+      Node* rightnode = new Node(10);
+      rightnode->changeColor();
+      rightnode->setParent(treehead);
+      treehead->setRight(rightnode);
       
       //leftRotate(treehead, treehead->getLeft());
       //rightRotate(treehead, treehead->getLeft());
@@ -157,20 +163,60 @@ void searchTree(Node* current, int data) {
   }
 }
 void fixTree(Node* &head, Node* current) {
-  
+  Node* grandparent = current->getParent()->getParent();
   if(current->getParent()->returnColor() == true) {
     if(current->getUncle() == NULL) {
       cout << "NULL" << endl;
       if(current->getParent()->getLeft() == current) {
+        
+	if(grandparent == head) {
 	rightRotate(head, current->getParent()->getParent());
 	current->printNode();
+        
 	head->changeColor();
 	head->getRight()->changeColor();
-	
+	}
+	else {
+        rightRotate(head, current->getParent()->getParent());
+	current->printNode();
+	grandparent->changeColor();
+	grandparent->getRight()->changeColor();
+	}
+      }
+      else {
+        leftRotate(head, current->getParent()->getParent());
+	current->printNode();
+	head->changeColor();
+	head->getLeft()->changeColor();
       }
     }
     else {
       cout << "UNCLE PRESENT" << endl;
+      if(current->getUncle()->returnColor() == true) {
+	current->getUncle()->setColor(false);
+	current->getParent()->setColor(false);
+        if(grandparent != head) {
+	grandparent->setColor(true);
+	}
+	else {
+	  grandparent->setColor(false);
+	}
+      }
+      else {
+	//LL case
+        if(grandparent->getLeft() == current->getParent() && current == current->getParent()->getLeft()) {
+	  cout << "LL";
+	  rightRotate(head, grandparent);
+	  Node* sibling = current->getParent()->getRight();
+	  bool siblingcolor = sibling->returnColor();
+          sibling->setColor(current->getParent()->returnColor());
+	  current->getParent()->setColor(siblingcolor);
+	  
+	}
+	else {
+          cout << "OTB";
+	}
+      }
     }
   }
 }
