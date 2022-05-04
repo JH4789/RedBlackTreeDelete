@@ -37,8 +37,9 @@ int main() {
       Node* newnode = new Node(4);
       treehead->setLeft(newnode);
       newnode->setParent(treehead);
+      newnode->changeColor();
       Node* rightnode = new Node(10);
-      rightnode->changeColor();
+      
       rightnode->setParent(treehead);
       treehead->setRight(rightnode);
       
@@ -210,8 +211,37 @@ void fixTree(Node* &head, Node* current) {
 	  Node* sibling = current->getParent()->getRight();
 	  bool siblingcolor = sibling->returnColor();
           sibling->setColor(current->getParent()->returnColor());
-	  current->getParent()->setColor(siblingcolor);
+	  current->getParent()->setColor(siblingcolor);	  
+	}
+	//LR
+	else if(grandparent->getLeft() == current->getParent() && current == current->getParent()->getRight()) {
+          cout << "LR" << endl;
+	  leftRotate(head, current->getParent());
 	  
+	  rightRotate(head, current->getParent());
+          current->printNode();
+	  bool color = current->returnColor();
+	  current->setColor(current->getRight()->returnColor());
+	  current->getRight()->setColor(color);
+	}
+	//RR
+	else if(grandparent->getRight() == current->getParent() && current == current->getParent()->getRight()) {
+          cout << "RR";
+	  leftRotate(head, grandparent);
+	  Node* sibling = current->getParent()->getLeft();
+	  bool siblingcolor = sibling->returnColor();
+          sibling->setColor(current->getParent()->returnColor());
+	  current->getParent()->setColor(siblingcolor);	  
+	}
+	else if(grandparent->getRight() == current->getParent() && current == current->getParent()->getLeft()) {
+          cout << "RL" << endl;
+	  rightRotate(head, current->getParent());
+	  leftRotate(head, current->getParent());
+          current->printNode();
+	  bool color = current->returnColor();
+	  current->setColor(current->getLeft()->returnColor());
+	  current->getLeft()->setColor(color);
+	
 	}
 	else {
           cout << "OTB";
@@ -235,25 +265,29 @@ void leftRotate(Node* & head, Node* target) {
   }
   
   else {
-    
-      
     subtree = target->getRight()->getLeft();
     Node* targetright = target->getRight();
     if(target->getParent()->getLeft() == target) {
     target->getParent()->setLeft(targetright);
+    targetright->setParent(target->getParent());
     }
     else {
       target->getParent()->setRight(targetright);
+      targetright->setParent(target->getParent());
     }
     targetright->setLeft(target);
+    target->setParent(targetright);
     target->setRight(subtree);    
-    
+    if(subtree != NULL) {
+      subtree->setParent(target);
+    }
   }
 }
 void rightRotate(Node* & head, Node* target) {
   
   Node* subtree = NULL;
   if(target == head) {
+    cout << "OTB" << endl;
     subtree = target->getLeft()->getRight();
     head = target->getLeft();
     head->setRight(target);
