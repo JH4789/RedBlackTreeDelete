@@ -166,34 +166,53 @@ void searchTree(Node* current, int data) {
 void fixTree(Node* &head, Node* current) {
   Node* grandparent = current->getParent()->getParent();
   if(current->getParent()->returnColor() == true) {
-    if(current->getUncle() == NULL) {
+    
+    if(current->getUncle() != NULL && current->getUncle()->returnColor() == true) {
+      /*
       cout << "NULL" << endl;
       if(current->getParent()->getLeft() == current) {
         
 	if(grandparent == head) {
-	rightRotate(head, current->getParent()->getParent());
+	  cout << "1" << endl;
+	rightRotate(head, grandparent);
 	current->printNode();
         
 	head->changeColor();
 	head->getRight()->changeColor();
 	}
 	else {
-        rightRotate(head, current->getParent()->getParent());
+	  cout << "2" << endl;
+        rightRotate(head, grandparent);
 	current->printNode();
 	grandparent->changeColor();
 	grandparent->getRight()->changeColor();
 	}
       }
       else {
-        leftRotate(head, current->getParent()->getParent());
+	
+	cout << "3" << endl;
+        leftRotate(head, current->getParent());
+	rightRotate(head, current->getParent());
 	current->printNode();
 	head->changeColor();
-	head->getLeft()->changeColor();
+	head->getRight()->changeColor();
       }
+      */
+      cout << "OHOHO" << endl;
+	current->getUncle()->setColor(false);
+	current->getParent()->setColor(false);
+        if(grandparent != head) {
+	grandparent->setColor(true);
+	}
+	else {
+	  grandparent->setColor(false);
+	}
     }
+    
     else {
       cout << "UNCLE PRESENT" << endl;
-      if(current->getUncle()->returnColor() == true) {
+      if( 1==2) {
+        cout << "OHOHO" << endl;
 	current->getUncle()->setColor(false);
 	current->getParent()->setColor(false);
         if(grandparent != head) {
@@ -229,16 +248,30 @@ void fixTree(Node* &head, Node* current) {
           cout << "RR";
 	  leftRotate(head, grandparent);
 	  Node* sibling = current->getParent()->getLeft();
-	  bool siblingcolor = sibling->returnColor();
+	  bool siblingcolor = true;
+	  if(sibling != NULL) {
+	    siblingcolor = sibling->returnColor();
+	  }
+	  else {
+            siblingcolor = false;
+	  }
           sibling->setColor(current->getParent()->returnColor());
 	  current->getParent()->setColor(siblingcolor);	  
-	}
+        }
+	//RL
 	else if(grandparent->getRight() == current->getParent() && current == current->getParent()->getLeft()) {
           cout << "RL" << endl;
 	  rightRotate(head, current->getParent());
+          cout << "FLAG" << endl;
+	  
+	  current->printNode();
+	  
 	  leftRotate(head, current->getParent());
+	  
           current->printNode();
+	  printFormat(head, 3);
 	  bool color = current->returnColor();
+	  current = current->getParent();
 	  current->setColor(current->getLeft()->returnColor());
 	  current->getLeft()->setColor(color);
 	
