@@ -179,7 +179,13 @@ void fixTree(Node* &head, Node* current) {
 	  cout << "LL";
 	  rightRotate(head, grandparent);
 	  Node* sibling = current->getParent()->getRight();
-	  bool siblingcolor = sibling->returnColor();
+          bool siblingcolor = true;
+	  if(sibling != NULL) {
+	    siblingcolor = sibling->returnColor();
+	  }
+	  else {
+            siblingcolor = false;
+	  }
           sibling->setColor(current->getParent()->returnColor());
 	  current->getParent()->setColor(siblingcolor);	  
 	}
