@@ -1,3 +1,8 @@
+/*
+Name: Jayden Huang
+Date: 5/8/2022
+Project: Red-Black Tree insertion, implementation of red black tree that supports insert and search
+*/
 #include <iostream>
 #include "Node.h"
 #include <cstring>
@@ -32,20 +37,9 @@ int main() {
       printFormat(treehead, 3);
     }
     else if (strcmp(commandinput, "SEARCH") == 0) {
-
-      //leftRotate(treehead, treehead);
-      Node* newnode = new Node(4);
-      treehead->setLeft(newnode);
-      newnode->setParent(treehead);
-      newnode->changeColor();
-      Node* rightnode = new Node(10);
-      
-      rightnode->setParent(treehead);
-      treehead->setRight(rightnode);
-      
-      //leftRotate(treehead, treehead->getLeft());
-      //rightRotate(treehead, treehead->getLeft());
-      
+      cout << "Enter the number you would like to search for: " << endl;
+      cin >> input;
+      searchTree(treehead, input);
     }
     else if (strcmp(commandinput, "FILE") == 0) {
       //Opens from file and iterates through using the same add function
@@ -168,38 +162,7 @@ void fixTree(Node* &head, Node* current) {
   if(current->getParent()->returnColor() == true) {
     
     if(current->getUncle() != NULL && current->getUncle()->returnColor() == true) {
-      /*
-      cout << "NULL" << endl;
-      if(current->getParent()->getLeft() == current) {
-        
-	if(grandparent == head) {
-	  cout << "1" << endl;
-	rightRotate(head, grandparent);
-	current->printNode();
-        
-	head->changeColor();
-	head->getRight()->changeColor();
-	}
-	else {
-	  cout << "2" << endl;
-        rightRotate(head, grandparent);
-	current->printNode();
-	grandparent->changeColor();
-	grandparent->getRight()->changeColor();
-	}
-      }
-      else {
-	
-	cout << "3" << endl;
-        leftRotate(head, current->getParent());
-	rightRotate(head, current->getParent());
-	current->printNode();
-	head->changeColor();
-	head->getRight()->changeColor();
-      }
-      */
-      cout << "OHOHO" << endl;
-	current->getUncle()->setColor(false);
+      	current->getUncle()->setColor(false);
 	current->getParent()->setColor(false);
         if(grandparent != head) {
 	grandparent->setColor(true);
@@ -210,20 +173,8 @@ void fixTree(Node* &head, Node* current) {
     }
     
     else {
-      cout << "UNCLE PRESENT" << endl;
-      if( 1==2) {
-        cout << "OHOHO" << endl;
-	current->getUncle()->setColor(false);
-	current->getParent()->setColor(false);
-        if(grandparent != head) {
-	grandparent->setColor(true);
-	}
-	else {
-	  grandparent->setColor(false);
-	}
-      }
-      else {
-	//LL case
+        //All cases are done according to algorithm
+      	//LL case
         if(grandparent->getLeft() == current->getParent() && current == current->getParent()->getLeft()) {
 	  cout << "LL";
 	  rightRotate(head, grandparent);
@@ -261,29 +212,19 @@ void fixTree(Node* &head, Node* current) {
 	//RL
 	else if(grandparent->getRight() == current->getParent() && current == current->getParent()->getLeft()) {
           cout << "RL" << endl;
-	  rightRotate(head, current->getParent());
-          cout << "FLAG" << endl;
-	  
-	  current->printNode();
-	  
+	  rightRotate(head, current->getParent());	  
 	  leftRotate(head, current->getParent());
-	  
-          current->printNode();
-	  printFormat(head, 3);
-	  bool color = current->returnColor();
-	  current = current->getParent();
+          bool color = current->returnColor();	  
 	  current->setColor(current->getLeft()->returnColor());
 	  current->getLeft()->setColor(color);
 	
 	}
-	else {
-          cout << "OTB";
-	}
       }
     }
-  }
 }
+//Rotate functions
 void leftRotate(Node* & head, Node* target) {
+  //Swaps subtrees special case for head
   Node* subtree = NULL;
   if(target == head) {
     subtree = target->getRight()->getLeft();
@@ -309,6 +250,7 @@ void leftRotate(Node* & head, Node* target) {
       targetright->setParent(target->getParent());
     }
     targetright->setLeft(target);
+    targetright->setParent(target->getParent());
     target->setParent(targetright);
     target->setRight(subtree);    
     if(subtree != NULL) {
@@ -317,10 +259,9 @@ void leftRotate(Node* & head, Node* target) {
   }
 }
 void rightRotate(Node* & head, Node* target) {
-  
+  //See left rotate
   Node* subtree = NULL;
   if(target == head) {
-    cout << "OTB" << endl;
     subtree = target->getLeft()->getRight();
     head = target->getLeft();
     head->setRight(target);
@@ -332,10 +273,6 @@ void rightRotate(Node* & head, Node* target) {
     }
   }
   else {
-    if(target->getLeft() == NULL) {
-      cout << "UH OH";
-    }
-    else {
       subtree = target->getLeft()->getRight();
       Node* targetleft = target->getLeft();
       cout << target->getData() << endl;
@@ -348,12 +285,13 @@ void rightRotate(Node* & head, Node* target) {
 	target->setParent(target->getParent());
       }
       targetleft->setRight(target);
+      targetleft->setParent(target->getParent());
       target->setParent(targetleft);
       target->setLeft(subtree);
       if(subtree != NULL) {
 	subtree->setParent(target);
       }
-    }
+    
   }
   
 }
