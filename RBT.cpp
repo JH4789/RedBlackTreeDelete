@@ -12,8 +12,10 @@ void printFormat(Node* head, int space);
 void addTree(Node* & head, Node* current, Node* newnode);
 void searchTree(Node* current, int data);
 void fixTree(Node* & head, Node* current);
+void fixTreeDelete(Node* & head, Node* sibling);
 void leftRotate(Node* & head, Node* target);
 void rightRotate(Node* & head, Node* target);
+void deleteTree(Node* & head, Node* current, int data);
 using namespace std;
 int main() {
   Node* heaparray[100];
@@ -40,6 +42,11 @@ int main() {
       cout << "Enter the number you would like to search for: " << endl;
       cin >> input;
       searchTree(treehead, input);
+    }
+    else if (strcmp(commandinput, "DELETE") == 0) {
+       cout << "Enter the number you would like to delete: " << endl;
+       cin >> input;
+       deleteTree(treehead, treehead, input);
     }
     else if (strcmp(commandinput, "FILE") == 0) {
       //Opens from file and iterates through using the same add function
@@ -300,4 +307,149 @@ void rightRotate(Node* & head, Node* target) {
     
   }
   
+}
+void deleteTree(Node* & head, Node* current, int data) {
+  //Could use a bit more recursion on the two child case
+  if(head == NULL) {
+    cout << "The tree is empty!" << endl;
+  }
+  //Checks for three cases: one child, two children, no children
+  //Parent is needed because just calling the destructor was not working
+  if(current != NULL) {
+    if(current->getData() == data) {
+      //No children case
+      if(current->getLeft() == NULL && current->getRight() == NULL) {
+	if(current == head) {
+          delete head;
+	  head = NULL;
+	}
+        else if(current->getParent()->getLeft() == current) {
+	  current->getParent()->setLeft(NULL);
+	  delete current;
+	}
+	else {
+          current->getParent()->setRight(NULL);
+	  Node* sibling = current->getParent()->getLeft();
+	  fixTreeDelete(head, sibling);
+	  delete current;
+	}
+      }
+      //Only right child present case
+      else if(current->getLeft() == NULL) {
+	if(current == head) {
+	  Node* temp = head;
+	  head = head->getRight();
+	  delete temp;
+	}
+	else if(current->getParent()->getLeft() == current) {
+          Node* temp = current;
+	  current->getParent()->setLeft(current->getRight());
+	  current->getLeft()->setParent(current->getParent());
+	  delete temp;
+	}
+	else {
+          Node* temp = current;
+	  current->getParent()->setRight(current->getRight());
+	  current->getRight()->setParent(current->getParent());
+	  delete temp;
+	}
+      }
+      //Only left child present case
+      else if(current->getRight() == NULL) {
+        
+	if(current == head) {
+	  Node* temp = head;
+	  head = head->getLeft();
+	  delete temp;
+	}
+	else if(current->getParent()->getLeft() == current) {
+          Node* temp = current;
+	  current->getParent()->setLeft(current->getLeft());
+	  current->getLeft()->setParent(current->getParent());
+	  if(current->returnColor() == true || current->getLeft()->returnColor() == true) {
+             current = current->getLeft();
+	     current->setColor(false);
+	  }
+	  else {
+	    cout << "FLAG";
+	    Node* sibling = current->getParent()->getRight();
+	    current = current->getLeft();
+	    fixTreeDelete(head, sibling);
+	  }
+	  delete temp;
+	  
+	}
+	else {
+          Node* temp = current;
+	  current->getParent()->setRight(current->getLeft());
+	  current->getRight()->setParent(current->getParent());
+	  delete temp;
+	}
+      }
+      //Two children case
+      else {
+	//Swaps the current node and its inorder successor
+	Node* inorder = current->getRight();
+	Node* orderparent = current;
+	while(inorder->getLeft() != NULL) {
+          orderparent = inorder;
+	  inorder = inorder->getLeft();
+	}
+	int newdata = inorder->getData();
+	int deletedata = current->getData();
+	inorder->setData(current->getData());
+	current->setData(newdata);
+	//This should be a recursive call but it wasn't working so I just copied the code
+	if(inorder->getLeft() == NULL && inorder->getRight() == NULL) {
+          if(orderparent->getLeft() == inorder) {
+	    orderparent->setLeft(NULL);
+	  }
+	  else {
+            orderparent->setRight(NULL);
+	  }
+	  Node* temp = inorder;
+	  delete temp;
+	}
+	else if(inorder->getRight() == NULL) {
+          Node* temp = inorder;
+	  
+	  orderparent->setLeft(inorder->getLeft());
+	  delete temp;
+	}
+	else {
+	  Node* temp = inorder;
+	  orderparent->setRight(inorder->getRight());
+	  delete temp;
+	}
+      }
+    }
+    //Same as in print, navigates through the tree
+    else if(current->getData() > data) {
+      
+      deleteTree(head, current->getLeft(), data);
+    }
+    else {
+      
+      deleteTree(head, current->getRight(), data);
+    }
+  }
+}
+void fixTreeDelete(Node* & head, Node* sibling) {
+  if(sibling->returnColor() == false) {
+    //Left Sibling Child cases
+    if(sibling->getLeft()->returnColor() == true) {
+
+      //LL
+      if(sibling->getParent()->getLeft() == sibling) {
+	leftRotate(head, sibling);
+	
+      }
+    }
+    //Right Sibling Child cases
+    else if (sibling->getRight()->returnColor() == true) {
+    }
+    //Black sibling child case
+    else {
+    }
+  }
 }
