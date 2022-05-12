@@ -252,7 +252,9 @@ void leftRotate(Node* & head, Node* target) {
   }
   
   else {
+    if(target->getRight() != NULL) {
     subtree = target->getRight()->getLeft();
+    }
     Node* targetright = target->getRight();
     if(target->getParent()->getLeft() == target) {
     target->getParent()->setLeft(targetright);
@@ -305,8 +307,7 @@ void rightRotate(Node* & head, Node* target) {
 	subtree->setParent(target);
       }
     
-  }
-  
+  }  
 }
 void deleteTree(Node* & head, Node* current, int data) {
   //Could use a bit more recursion on the two child case
@@ -435,21 +436,45 @@ void deleteTree(Node* & head, Node* current, int data) {
   }
 }
 void fixTreeDelete(Node* & head, Node* sibling) {
-  if(sibling->returnColor() == false) {
-    //Left Sibling Child cases
-    if(sibling->getLeft()->returnColor() == true) {
-
-      //LL
-      if(sibling->getParent()->getLeft() == sibling) {
-	leftRotate(head, sibling);
-	
+  if(sibling == NULL) {
+    return;
+  }
+  else if(sibling->returnColor() == false) {
+    
+    //Sibling is left child
+    if(sibling->getParent()->getLeft() == sibling) {
+      if(sibling->getLeft() == NULL && sibling->getRight() == NULL) {
+	sibling->changeColor();
       }
+      //NEED FIX HERE
+      //ADD RECOLORING FUNCTION?
+      else if(sibling->getLeft() != NULL) {
+        //LL
+	if(sibling->getLeft()->returnColor() == true) {
+          cout << "DLL" << endl;
+	  rightRotate(head, sibling->getParent());
+          if(sibling->getLeft()->returnColor() == true) {
+	    sibling->getLeft()->changeColor();
+	  }
+	  if(head->returnColor() == true) {
+	    head->changeColor();
+	  }
+	}
+      }
+	//LR
+       else {
+	 if(sibling->getRight()->returnColor() == true) {
+	   cout << "DLR" << endl;
+           leftRotate(head, sibling);
+	   rightRotate(head, sibling->getParent()->getParent());
+	   
+          }
+       }
+    
     }
-    //Right Sibling Child cases
-    else if (sibling->getRight()->returnColor() == true) {
-    }
-    //Black sibling child case
+    //Sibling is right child
     else {
+       
     }
   }
 }
