@@ -326,6 +326,8 @@ void deleteTree(Node* & head, Node* current, int data) {
 	}
         else if(current->getParent()->getLeft() == current) {
 	  current->getParent()->setLeft(NULL);
+	  Node* sibling = current->getParent()->getRight();
+	  fixTreeDelete(head, sibling);
 	  delete current;
 	}
 	else {
@@ -350,6 +352,8 @@ void deleteTree(Node* & head, Node* current, int data) {
 	}
 	else {
           Node* temp = current;
+	  bool currentcolor = current->returnColor();
+	  current->getLeft()->setColor(currentcolor);
 	  current->getParent()->setRight(current->getRight());
 	  current->getRight()->setParent(current->getParent());
 	  delete temp;
@@ -367,6 +371,7 @@ void deleteTree(Node* & head, Node* current, int data) {
           Node* temp = current;
 	  current->getParent()->setLeft(current->getLeft());
 	  current->getLeft()->setParent(current->getParent());
+	  //FIGURE THIS STUFF OUT PLZ
 	  if(current->returnColor() == true || current->getLeft()->returnColor() == true) {
              current = current->getLeft();
 	     current->setColor(false);
@@ -382,8 +387,10 @@ void deleteTree(Node* & head, Node* current, int data) {
 	}
 	else {
           Node* temp = current;
+	  bool currentcolor = current->returnColor();
+	  current->getLeft()->setColor(currentcolor);
 	  current->getParent()->setRight(current->getLeft());
-	  current->getRight()->setParent(current->getParent());
+	  current->getLeft()->setParent(current->getParent());
 	  delete temp;
 	}
       }
@@ -437,6 +444,7 @@ void deleteTree(Node* & head, Node* current, int data) {
 }
 void fixTreeDelete(Node* & head, Node* sibling) {
   if(sibling == NULL) {
+    cout << "NULL!" << endl;
     return;
   }
   else if(sibling->returnColor() == false) {
@@ -444,37 +452,39 @@ void fixTreeDelete(Node* & head, Node* sibling) {
     //Sibling is left child
     if(sibling->getParent()->getLeft() == sibling) {
       if(sibling->getLeft() == NULL && sibling->getRight() == NULL) {
+	cout << "FLAG, BOTH CHILDREN NULL" << endl;
 	sibling->changeColor();
       }
-      //NEED FIX HERE
-      //ADD RECOLORING FUNCTION?
+      //THIS IS WORKING FIX LR
       else if(sibling->getLeft() != NULL) {
         //LL
 	if(sibling->getLeft()->returnColor() == true) {
           cout << "DLL" << endl;
+	  bool parentcolor = sibling->getParent()->returnColor();
+	  sibling->getParent()->setColor(sibling->returnColor());
+	  sibling->setColor(parentcolor);
 	  rightRotate(head, sibling->getParent());
-          if(sibling->getLeft()->returnColor() == true) {
-	    sibling->getLeft()->changeColor();
-	  }
-	  if(head->returnColor() == true) {
-	    head->changeColor();
-	  }
+	  sibling->getLeft()->setColor(false);
 	}
       }
 	//LR
        else {
 	 if(sibling->getRight()->returnColor() == true) {
 	   cout << "DLR" << endl;
+	   bool siblingcolor = sibling->returnColor();
+	   sibling->setColor(sibling->getRight()->returnColor());
+	   sibling->getRight()->setColor(siblingcolor);
            leftRotate(head, sibling);
 	   rightRotate(head, sibling->getParent()->getParent());
-	   
+	   sibling->setColor(false);
           }
        }
     
     }
     //Sibling is right child
     else {
-       
+      if(sibling->getRight()->returnColor() == true) {
+      }
     }
   }
 }
