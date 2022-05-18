@@ -475,15 +475,32 @@ void fixTreeDelete(Node* & head, Node* sibling) {
 	   sibling->setColor(sibling->getRight()->returnColor());
 	   sibling->getRight()->setColor(siblingcolor);
            leftRotate(head, sibling);
-	   rightRotate(head, sibling->getParent()->getParent());
-	   sibling->setColor(false);
-          }
+	   sibling = sibling->getParent();
+
+	   //Below is same as LL case
+	   sibling->printNode();
+	   sibling->getParent()->printNode();
+	   bool parentcolor = sibling->getParent()->returnColor();
+	   sibling->getParent()->setColor(sibling->returnColor());
+	   sibling->setColor(parentcolor);
+	   rightRotate(head, sibling->getParent());
+	   sibling->getLeft()->setColor(false);
+	   }
        }
     
     }
     //Sibling is right child
     else {
       if(sibling->getRight()->returnColor() == true) {
+         cout << "DRR" << endl;
+	  bool parentcolor = sibling->getParent()->returnColor();
+	  sibling->getParent()->setColor(sibling->returnColor());
+	  sibling->setColor(parentcolor);
+	  leftRotate(head, sibling->getParent());
+	  sibling->getRight()->setColor(false);
+      }
+      else {
+
       }
     }
   }
