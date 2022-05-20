@@ -341,22 +341,47 @@ void deleteTree(Node* & head, Node* current, int data) {
       else if(current->getLeft() == NULL) {
 	if(current == head) {
 	  Node* temp = head;
+	  Node* parent = head->getParent();
 	  head = head->getRight();
+	  head->setParent(parent);
+	  head->setColor(false);
 	  delete temp;
 	}
+	//Current is left child
 	else if(current->getParent()->getLeft() == current) {
           Node* temp = current;
-	  current->getParent()->setLeft(current->getRight());
-	  current->getLeft()->setParent(current->getParent());
-	  delete temp;
+	  if(current->returnColor() == true || current->getRight()->returnColor() == true) {
+            current->getRight()->setColor(false);
+	    current->getParent()->setLeft(current->getLeft());
+	     current->getRight()->setParent(current->getParent());
+	     delete temp;
+	  }
+	  else {
+	    cout << "FLAG";
+	    current->getParent()->setRight(current->getLeft());
+	    current->getRight()->setParent(current->getParent());
+	    Node* sibling = current->getParent()->getRight(); 
+            delete temp;
+	    fixTreeDelete(head, sibling);
+	  }
 	}
+	//Current is right child
 	else {
           Node* temp = current;
-	  bool currentcolor = current->returnColor();
-	  current->getRight()->setColor(currentcolor);
-	  current->getParent()->setRight(current->getRight());
-	  current->getRight()->setParent(current->getParent());
-	  delete temp;
+	  if(current->returnColor() == true || current->getRight()->returnColor() == true) {
+            current->getRight()->setColor(false);
+	    current->getParent()->setRight(current->getRight());
+	     current->getRight()->setParent(current->getParent());  
+	     delete temp;
+	  }
+	  else {
+	    cout << "FLAG";
+	    current->getParent()->setRight(current->getRight());
+	    current->getRight()->setParent(current->getParent());
+	    Node* sibling = current->getParent()->getLeft();
+	    fixTreeDelete(head, sibling);
+	    delete temp;
+	  }
 	}
       }
       //Only left child present case
@@ -364,45 +389,49 @@ void deleteTree(Node* & head, Node* current, int data) {
         
 	if(current == head) {
 	  Node* temp = head;
+	  Node* parent = head->getParent();
 	  head = head->getLeft();
+	  head->setParent(parent);
+	  head->setColor(false);
 	  delete temp;  
 	}
-        
+        //Current is left child
 	else if(current->getParent()->getLeft() == current) {
           Node* temp = current;
-	  //FIGURE THIS STUFF OUT PLZ
+	  
 	  if(current->returnColor() == true || current->getLeft()->returnColor() == true) {
             current->getLeft()->setColor(false);
 	    current->getParent()->setLeft(current->getLeft());
 	     current->getLeft()->setParent(current->getParent());
+             delete temp;
 	  }
 	  else {
 	    cout << "FLAG";
 	    current->getParent()->setLeft(current->getLeft());
 	    current->getLeft()->setParent(current->getParent());
-	    Node* sibling = current->getParent()->getRight(); 
+	    Node* sibling = current->getParent()->getRight();
+	     delete temp;
 	    fixTreeDelete(head, sibling);
 	  }
-	  delete temp;
+	 
 	}
+	//Current is right child
 	else {
           Node* temp = current;
 	  if(current->returnColor() == true || current->getLeft()->returnColor() == true) {
             current->getLeft()->setColor(false);
 	    current->getParent()->setRight(current->getLeft());
 	     current->getLeft()->setParent(current->getParent());
-             
+	      delete temp;
 	  }
-	  
 	  else {
 	    cout << "FLAG";
 	    current->getParent()->setRight(current->getLeft());
 	    current->getLeft()->setParent(current->getParent());
-	    Node* sibling = current->getParent()->getRight();
-	    
+	    Node* sibling = current->getParent()->getLeft();
+	    delete temp;   
 	    fixTreeDelete(head, sibling);
 	  }
-	    delete temp;  
 	}
 	
       }
@@ -459,6 +488,13 @@ void fixTreeDelete(Node* & head, Node* sibling) {
     cout << "NULL!" << endl;
     return;
   }
+  else if(sibling->returnColor() == false && sibling->getLeft() == NULL || sibling->getLeft()->returnColor() == false && sibling->getRight() == NULL || sibling->getRight()->returnColor() == false) {
+    sibling->setColor(true);
+    Node* iterate = sibling;
+    while(iterate->getParent()->getColor() != true) {
+      //if(iterate->getLeft() == NULL || iterate->getLeft()->returnColor() == false && 
+    }
+  }
   else if(sibling->returnColor() == false) {
     
     //Sibling is left child
@@ -508,17 +544,20 @@ void fixTreeDelete(Node* & head, Node* sibling) {
       if(sibling->getRight() == NULL && sibling->getLeft() == NULL) {
         cout << "BOTH CHILDREN NULL" << endl;
       }
-      else if(sibling->getRight()->returnColor() == true) {
-         cout << "DRR" << endl;
+      else if(sibling->getRight() != NULL) {
+	if(sibling->getRight()->returnColor() == true) {
+	  cout << "DRR" << endl;
 	  bool parentcolor = sibling->getParent()->returnColor();
 	  sibling->getParent()->setColor(sibling->returnColor());
 	  sibling->setColor(parentcolor);
 	  leftRotate(head, sibling->getParent());
 	  sibling->getRight()->setColor(false);
+	}
       }
       else {
-        cout << "DRL" << endl;
-	/*
+        if(sibling->getLeft()->returnColor() == true) {
+	cout << "DRL" << endl;
+	
         bool siblingcolor = sibling->returnColor();
 	sibling->setColor(sibling->getLeft()->returnColor());
 	sibling->getLeft()->setColor(siblingcolor);
@@ -533,7 +572,7 @@ void fixTreeDelete(Node* & head, Node* sibling) {
 	sibling->setColor(parentcolor);
 	leftRotate(head, sibling->getParent());
 	sibling->getRight()->setColor(false);
-	*/ 
+	}
       }
     }
   }
