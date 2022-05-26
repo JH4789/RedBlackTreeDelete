@@ -22,6 +22,20 @@ void Node::changeColor() {
     color = true;
   }
 }
+bool Node::checkRed() {
+  bool redpresent = false;
+  if(left != NULL) {
+    if(left->returnColor() == true) {
+      redpresent = true;
+    }
+  }
+  if(right != NULL) {
+    if(right->returnColor() == true) {
+      redpresent = true;
+    }
+  }
+  return redpresent;
+}
 void Node::setColor(bool newcolor) {
   color = newcolor;
 }

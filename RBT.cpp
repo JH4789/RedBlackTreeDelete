@@ -502,9 +502,11 @@ void fixTreeDelete(Node* & head, Node* sibling) {
     //Sibling is left child
     if(sibling->getParent()->getLeft() == sibling) {
       cout << "LEFT" << endl;
-      if(sibling->getLeft() == NULL && sibling->getRight() == NULL) {
-        //FIX CRINGE CHECKING FOR TWO BLACK CHILDREN
-	// CHECK ON RECOLORING
+      if(sibling->checkRed() == false) {
+        sibling->changeColor();
+	if(sibling->getParent()->returnColor() == true) {
+	  sibling->getParent()->setColor(false);
+	}
       }
       
       else if(sibling->getLeft() != NULL) {

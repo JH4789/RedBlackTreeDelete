@@ -12,6 +12,7 @@ class Node{
   int getSRight();
   
   ~Node();
+  bool checkRed();
   void printNode();
   void setLeft(Node*);
   void setRight(Node*);
