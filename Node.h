@@ -2,7 +2,7 @@
 #define NODEHEADER
 #include <iostream>
 using namespace std;
-//Nothing to see here
+//Nothing to see here (still)
 class Node{
  public:
   Node(int newdata);

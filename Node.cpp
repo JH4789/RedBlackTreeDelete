@@ -1,5 +1,6 @@
 #include "Node.h"
 //Standard node construction, copied from previous projects
+//Added a checkRed function to check for nodes with black/null children
 Node::Node(int newdata) {
   data = newdata;
   left = NULL;
