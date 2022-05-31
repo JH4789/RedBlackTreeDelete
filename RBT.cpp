@@ -566,6 +566,14 @@ void fixTreeDelete(Node* & head, Node* sibling) {
 	if(sibling->getParent()->returnColor() == true) {
 	  sibling->getParent()->setColor(false);
 	}
+	else {
+	  //Recursive case??
+          if(sibling->getParent()->getParent()->getLeft() == sibling->getParent()) {
+	  
+	  }
+	  else {
+	  }
+	}
       }
       
       else if(sibling->getLeft() != NULL) {
