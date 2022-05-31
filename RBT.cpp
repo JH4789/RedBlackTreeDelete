@@ -1,6 +1,6 @@
 /*
 Name: Jayden Huang
-Date: 5/29/2022
+Date: 5/31/2022
 Project: Red-Black Tree Deletion, implementation of red black tree that supports insert, search, and deletion
 */
 #include <iostream>
@@ -81,7 +81,14 @@ void addTree(Node* & head, Node* current, Node* newnode) {
       if(current->getRight() == NULL) {
 	current->setRight(newnode);
 	newnode->setParent(current);
-	fixTree(head, newnode);
+	current = newnode;
+	//Searches up the tree and fixes any cases with a red node and red parent, same goes for the rest of the function
+        while(current->getParent() != NULL) {	
+	  if(current->returnColor() == true && current->getParent()->returnColor() == true) {
+	    fixTree(head, current);
+	  }
+	  current = current->getParent();
+	}
 	return;
       }
       else {
@@ -92,7 +99,15 @@ void addTree(Node* & head, Node* current, Node* newnode) {
     if(current->getLeft() == NULL) {
       current->setLeft(newnode);
       newnode->setParent(current);
-      fixTree(head, newnode);
+      current = newnode;
+      
+      while(current->getParent() != NULL) {
+	
+      if(current->returnColor() == true && current->getParent()->returnColor() == true) {
+	fixTree(head, current);
+      }
+      current = current->getParent();	
+      }
       return;
     }
     else {
@@ -103,14 +118,26 @@ void addTree(Node* & head, Node* current, Node* newnode) {
        if(current->getLeft() == NULL) {
            current->setLeft(newnode);
 	   newnode->setParent(current);
-	   fixTree(head, newnode);
+	   current = newnode;
+        while(current->getParent() != NULL) {
+	  if(current->returnColor() == true && current->getParent()->returnColor() == true) {
+	    fixTree(head, current);
+	  }
+	  current = current->getParent();
+	}
            return;
        }
        else if(current->getRight() == NULL) {
            current->setRight(newnode);
 	   newnode->setParent(current);
-	   fixTree(head, newnode);
-            return;
+	   current = newnode;
+	   while(current->getParent() != NULL) {
+	     if(current->returnColor() == true && current->getParent()->returnColor() == true) {
+	       fixTree(head, current);
+	     }
+	     current = current->getParent();
+	   }
+           return;
        }
        else {
 	 return;
@@ -467,14 +494,24 @@ void deleteTree(Node* & head, Node* current, int data) {
 	}
 	else if(inorder->getRight() == NULL) {
           Node* temp = inorder;
+	  if(orderparent->getLeft() == inorder) {
 	  orderparent->setLeft(inorder->getLeft());
-	  inorder->getRight()->setColor(inorder->returnColor());
-	  inorder->getRight()->setParent(orderparent);
+	  }
+	  else {
+	  orderparent->setRight(inorder->getLeft());
+	  }
+	  inorder->getLeft()->setColor(inorder->returnColor());
+	  inorder->getLeft()->setParent(orderparent);
 	  delete temp;
 	}
 	else {
 	  Node* temp = inorder;
+	  if(orderparent->getLeft() == inorder) {
+	    orderparent->setLeft(inorder->getRight());
+	  }
+	  else {
 	  orderparent->setRight(inorder->getRight());
+          }
 	  inorder->getRight()->setColor(inorder->returnColor());
 	  inorder->getRight()->setParent(orderparent);
 	  delete temp;
