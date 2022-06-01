@@ -53,7 +53,7 @@ int main() {
       fstream File;
       int fileinput = 0;
       File.open("File.txt");
-      for(int i = 0; i <100; i++) {
+      for(int i = 0; i <10; i++) {
 	File >> fileinput;
 	Node* newnode = new Node(fileinput);
 	addTree(treehead, treehead, newnode);
@@ -568,10 +568,15 @@ void fixTreeDelete(Node* & head, Node* sibling) {
 	}
 	else {
 	  //Recursive case??
-          if(sibling->getParent()->getParent()->getLeft() == sibling->getParent()) {
-	  
-	  }
-	  else {
+	  if(sibling->getParent()->getParent() != NULL) {
+	    if(sibling->getParent()->getParent()->getLeft() == sibling->getParent()) {
+	      Node* parentsibling = sibling->getParent()->getParent()->getRight();
+	      fixTreeDelete(head, parentsibling);
+	    }
+	    else {
+	      Node* parentsibling = sibling->getParent()->getParent()->getLeft();
+	      fixTreeDelete(head, parentsibling);
+	    }
 	  }
 	}
       }
@@ -614,6 +619,18 @@ void fixTreeDelete(Node* & head, Node* sibling) {
         sibling->changeColor();
 	if(sibling->getParent()->returnColor() == true) {
 	  sibling->getParent()->setColor(false);
+	}
+	else {
+	  if(sibling->getParent()->getParent() != NULL) {
+	    if(sibling->getParent()->getParent()->getLeft() == sibling->getParent()) {
+	      Node* parentsibling = sibling->getParent()->getParent()->getRight();
+	      fixTreeDelete(head, parentsibling);
+	    }
+	    else {
+	      Node* parentsibling = sibling->getParent()->getParent()->getLeft();
+	      fixTreeDelete(head, parentsibling);
+	    }
+	  }
 	}
       }
       //RR
